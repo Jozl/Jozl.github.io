@@ -90,17 +90,11 @@ tags:
 
 这是这次改造之后的分工，也是以后照着用的地图：
 
-```
-~/research-archive (私有)                ~/Jozl.github.io (公开)
-  材料库：笔记、来源、原件                  源 + Pages 仓
-         │                                      ▲
-         │  同步成品 report.md                  │ git push
-         └──────────────┬───────────────────────┘
-                        ▼
-                 GitHub Actions 构建
-                        │
-                        ▼
-                 https://jozl.github.io
+```mermaid
+flowchart LR
+    A["research-archive<br/>私有材料库"] -->|"同步成品 report.md"| B["Jozl.github.io<br/>源 + Pages 仓"]
+    B -->|"git push"| C["GitHub Actions"]
+    C -->|"deploy-pages"| D["https://jozl.github.io"]
 ```
 
 | 仓库 | 可见性 | 角色 | 现在还要改它吗 |

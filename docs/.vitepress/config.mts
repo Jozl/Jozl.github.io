@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { defineTeekConfig } from 'vitepress-theme-teek/config'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
 // Teek 主题配置（博客风格）
 const teekConfig = defineTeekConfig({
@@ -51,7 +52,7 @@ const teekConfig = defineTeekConfig({
   },
 })
 
-export default defineConfig({
+export default withMermaid(defineConfig({
   extends: teekConfig,
   lang: 'zh-CN',
   title: 'Jozl',
@@ -84,4 +85,4 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/Jozl' }],
     search: { provider: 'local' },
   },
-})
+}))
