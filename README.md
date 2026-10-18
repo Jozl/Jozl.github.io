@@ -65,7 +65,7 @@ coverImg: /images/<文件名>/cover.jpg
 
 长期调研不走 `docs/posts/` 手写，而是**材料在材料库、成品靠脚本同步**：
 
-1. 材料与底稿在 `~/jozl.github.io-src/research/<slug>/`（私有材料库），规范见那边的 `research/README.md`
+1. 材料与底稿在 `~/research-archive/research/<slug>/`（私有材料库），规范见那边的 `research/README.md`
 2. 把结论写进 `report.md`，更新 `meta.yml` 的 `stage` / `updated`
 3. 在本仓同步，然后 push（Actions 自动部署）：
 

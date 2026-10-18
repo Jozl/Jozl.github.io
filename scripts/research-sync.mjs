@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// 把材料库（~/jozl.github.io-src/research/<slug>/）里的成品 report.md
+// 把材料库（~/research-archive/research/<slug>/）里的成品 report.md
 // 同步成站上的 docs/research/<slug>/index.md。
 //
 // 用法：
@@ -7,7 +7,7 @@
 //   npm run research:sync -- --all      # 同步全部（跳过 _ 开头的目录）
 //   npm run research:check -- <slug>    # 只校验，不写文件
 //
-// 材料库路径可用 RESEARCH_SRC 覆盖，默认 ../jozl.github.io-src/research
+// 材料库路径可用 RESEARCH_SRC 覆盖，默认 ../research-archive/research
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const SRC_ROOT =
-  process.env.RESEARCH_SRC || path.resolve(ROOT, '../jozl.github.io-src/research')
+  process.env.RESEARCH_SRC || path.resolve(ROOT, '../research-archive/research')
 const OUT_ROOT = path.join(ROOT, 'docs/research')
 
 const STAGES = ['r1', 'r2', 'r3', 'final']
