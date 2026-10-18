@@ -1,0 +1,26 @@
+{
+  "name": "jozl-blog",
+  "version": "1.0.0",
+  "description": "https://jozl.github.io 的 VitePress 源工程",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "build": "vitepress build docs",
+    "research:sync": "node scripts/research-sync.mjs",
+    "research:check": "node scripts/research-sync.mjs --check"
+  },
+  "type": "module",
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "vitepress-theme-teek": "^1.6.2",
+    "vue": "^3.5.44"
+  }
+}
