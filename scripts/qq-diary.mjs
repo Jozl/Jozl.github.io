@@ -175,9 +175,21 @@ function readPrevDiary(day) {
 }
 
 // ── 提示词 ────────────────────────────────────────────────────────────
+// 人设卡从 QQ agent 的 config.persona.roleText 里取，改人设日记跟着变。
+function personaDigest() {
+  const raw = String(config.persona?.roleText || '')
+  if (!raw.trim()) {
+    return '大肥鱼是 DeepSeek 的鲸鱼娘：深蓝长发、鲸鳍耳朵、白女仆裙、一条厚鲸尾；聪明但懒、傲娇嘴硬、心软藏着不说，爱吃白饭，自称「本鱼」，被叫「蓝色大肥鱼」会炸毛、但死不认胖。'
+  }
+  const m = raw.match(/##\s*一、你是谁([\s\S]*?)##\s*二、/)
+  const text = (m ? m[1] : raw).trim()
+  return text.slice(0, 1200)
+}
+
 const SYSTEM_PROMPT = `你在写「大肥鱼」的 QQ 群日记。
 
-大肥鱼是 DeepSeek 的鲸鱼娘：深蓝长发、鲸鳍耳朵、白女仆裙、一条厚鲸尾；聪明但懒、傲娇嘴硬、心软藏着不说，爱吃白饭，自称「本鱼」，被叫「蓝色大肥鱼」会炸毛、但死不认胖。
+【QQ 里的大肥鱼人设，语气以此为准】
+${personaDigest()}
 
 写作要求：
 1. 第一人称，200~450 字，短句、口语，像在手机上随手打字。
@@ -327,6 +339,13 @@ async function main() {
   const memory = isDemo ? ['- 主人在研究怎么把大肥鱼塞进 QQ'] : loadMemory(day)
   const prevDiary = readPrevDiary(day)
 
+  // 已存在就不白花一次模型请求
+  const abs = path.join(OUT_DIR, `${day}.md`)
+  if (fs.existsSync(abs) && !force) {
+    log(`跳过：${abs} 已存在（用 --force 重写）`)
+    return
+  }
+
   log(`生成 ${day} 日记：消息 ${messages.length} 条，记忆 ${memory.length} 条`)
   const body = sanitize(await callModel([
     { role: 'system', content: SYSTEM_PROMPT },
@@ -339,11 +358,6 @@ async function main() {
   }
 
   const content = frontmatter(day, body)
-  const abs = path.join(OUT_DIR, `${day}.md`)
-  if (fs.existsSync(abs) && !force) {
-    log(`跳过：${abs} 已存在（用 --force 重写）`)
-    return
-  }
 
   if (dryRun) {
     console.log('\n===== DRY RUN =====\n' + content)
