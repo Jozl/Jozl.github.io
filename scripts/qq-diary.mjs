@@ -32,7 +32,7 @@ const force = args.includes('--force')
 const demo = args.includes('--demo')
 const dateArg = args.find((a) => /^\d{4}-\d{2}-\d{2}$/.test(a)) || null
 
-const MIN_MESSAGES = 5
+const MIN_MESSAGES = Number(process.env.DIARY_MIN_MESSAGES || 3)
 const MAX_BODY = 1800
 
 function log(...parts) {
