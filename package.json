@@ -16,7 +16,8 @@
     "build": "vitepress build docs",
     "research:sync": "node scripts/research-sync.mjs",
     "research:check": "node scripts/research-sync.mjs --check",
-    "diary": "node scripts/qq-diary.mjs"
+    "diary": "node scripts/qq-diary.mjs",
+    "growth": "node scripts/persona-growth.mjs"
   },
   "type": "module",
   "devDependencies": {
