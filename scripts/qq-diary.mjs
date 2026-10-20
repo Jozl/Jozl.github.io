@@ -223,7 +223,8 @@ function usageFooter(usage, balance) {
 async function buildUsageFooter(day) {
   const cfg = config.diary || {}
   const usage = cfg.usage !== false ? loadUsage(day) : null
-  const balance = cfg.balance !== false ? await fetchBalance() : null
+  // 余额默认不公开：只有显式 balance=true 才查
+  const balance = cfg.balance === true ? await fetchBalance() : null
   return usageFooter(usage, balance)
 }
 
@@ -254,7 +255,12 @@ ${personaDigest()}
 7. 只输出正文，不要标题、不要 markdown 标记、不要「日记：」前缀。`
 
 function buildUserPrompt({ day, transcript, memory, prevDiary }) {
+  const master = String(config.persona?.masterQQ || config.masterQQ || '')
   return `日期：${day}
+
+【当前事实】
+- 主人 QQ 是 ${master || '（未配置）'}，本鱼认这个号。
+- 如果素材里出现本鱼否认主人的内容，先判断是不是账号没对上/配置没生效的误会；别把一次性误会写成长期态度。
 
 【今天的群聊摘录】
 ${transcript || '（今天群里没什么人说话）'}
