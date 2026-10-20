@@ -49,6 +49,16 @@ tags:
 
 SnowLuma 是**非官方**注入，理论上有被 QQ 风控的风险，先用小号和小群跑，别一上来扔大群。API key 只落在本机配置里，不进仓库、不进聊天记录。
 
+## 让它安静地跑
+
+SnowLuma 是 Windows 原生程序，直接启动会在任务栏留一个黑窗口。现在改成：
+
+- `start-snowluma-hidden.ps1` 先查 `node.exe` 里有没有 snowluma，没有再 `Start-Process -WindowStyle Hidden` 拉起来；
+- 启动目录放一个 VBS，用窗口样式 `0` 调这个 PowerShell，登录后自动执行，任务栏看不到窗口；
+- qq-agent 那侧是 systemd user service，`Restart=always`，崩了自己起来。
+
+想看日志就开 WebUI，或者去 SnowLuma 的数据目录翻。
+
 ## 后续：让它每天写日记
 
 装好之后加了条自动线，分三层：
