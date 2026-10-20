@@ -174,6 +174,59 @@ function readPrevDiary(day) {
   }
 }
 
+// ── 当日 API 用量 / 余额 ──────────────────────────────────────────────
+const USAGE_FILE = path.join(DATA_DIR, 'usage-today.json')
+
+function loadUsage(day) {
+  const u = readJson(USAGE_FILE, null)
+  if (!u || u.dayKey !== day) return null
+  return u
+}
+
+function fmtTokens(n) {
+  const v = Number(n) || 0
+  if (v >= 10000) return (v / 10000).toFixed(1).replace(/\.0$/, '') + ' 万'
+  return String(v)
+}
+
+async function fetchBalance() {
+  const base = String(api.baseUrl || '').replace(/\/+$/, '')
+  if (!base.includes('api.deepseek.com') || !api.apiKey) return null
+  try {
+    const res = await fetch('https://api.deepseek.com/user/balance', {
+      headers: { Authorization: `Bearer ${api.apiKey}` },
+      signal: AbortSignal.timeout(10000)
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    const list = Array.isArray(data?.balance_infos) ? data.balance_infos : []
+    return list.find((b) => b.currency === 'CNY') || list[0] || null
+  } catch {
+    return null
+  }
+}
+
+function usageFooter(usage, balance) {
+  const bits = []
+  if (usage) {
+    bits.push(`${usage.runs || 0} 次运行`)
+    bits.push(`${fmtTokens(usage.totalTokens)} token`)
+  }
+  if (balance) {
+    const sym = balance.currency === 'CNY' ? '¥' : (balance.currency === 'USD' ? '$' : '')
+    bits.push(`账户余额 ${sym}${balance.total_balance}`)
+  }
+  if (!bits.length) return ''
+  return `\n\n---\n\n*今日 API 用量：${bits.join(' · ')}*`
+}
+
+async function buildUsageFooter(day) {
+  const cfg = config.diary || {}
+  const usage = cfg.usage !== false ? loadUsage(day) : null
+  const balance = cfg.balance !== false ? await fetchBalance() : null
+  return usageFooter(usage, balance)
+}
+
 // ── 提示词 ────────────────────────────────────────────────────────────
 // 人设卡从 QQ agent 的 config.persona.roleText 里取，改人设日记跟着变。
 function personaDigest() {
@@ -357,7 +410,7 @@ async function main() {
     return
   }
 
-  const content = frontmatter(day, body)
+  const content = frontmatter(day, body + await buildUsageFooter(day))
 
   if (dryRun) {
     console.log('\n===== DRY RUN =====\n' + content)
